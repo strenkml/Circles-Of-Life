@@ -1,2 +1,2 @@
-# Brick_Smash
-2D Brick Smashing Game
+# Circles of Life
+Game where big circles eat small circles
