@@ -9,7 +9,7 @@ function init(){
   }//end if
 
   gl.viewport(0,0,width,width);
-  gl.clearColor(0,1,1,1);
+  gl.clearColor(0.0,1.0,1.0,1.0);
 
   gl.enable(gl.DEPTH_TEST);
 
