@@ -1,2 +1,2 @@
-# Shape Pop
-Game where you shoot a cannon to pop shapes
+# Circles of Life
+Game where you eat the circles smaller than you to gain points 
