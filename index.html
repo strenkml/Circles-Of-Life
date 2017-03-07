@@ -1,39 +1,96 @@
+<!--
+Matthew Strenk
+2-16-17
+Lab2: HTML
+-->
 <!DOCTYPE html>
+<style>
+button{
+	border: solid 1 px;
+	color: white;
+	padding: 15px 16px;
+	text-align: center;
+	font-size: 16px;
+	transition-duration:0.2s;
+}
+
+button:hover{
+	color: black;
+}
+
+.button1{
+	background-color: #4CAF50;
+}
+
+.button1:hover{
+	background-color: #6fbf72;
+}
+
+.button2{
+	background-color: #3232ff;
+}
+
+.button2:hover{
+	background-color: #7f7fff;
+}
+
+.button3{
+	background-color: #ff3232;
+}
+
+.button3:hover{
+	background-color: #ff7f7f;
+}
+
+.button4{
+	background-color: #993299;
+}
+
+.button4:hover{
+	background-color: #bf7fbf;
+}
+</style>
+
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
-    <title>Circles of Life</title>
-    <script id="vertex-shader" type="x-shader/x-vertex">
-      attribute vec4 myPosition;
-      void main() {
-        gl_PointSize = 1.0;
-        gl_Position = myPosition;
-      }
-    </script>
-    <script id="fragment-shader-triangle" type="x-shader/x-fragment">
-      void main() {
-        gl_FragColor = vec4(1, 0, 0, 1.0);
-      }
-    </script>
-    <script id="fragment-shader-decagon" type="x-shader/x-fragment">
-      void main() {
-        gl_FragColor = vec4(0, 1, 0, 1.0);
-      }
-    </script>
-    <script id="fragment-shader-ellipse" type="x-shader/x-fragment">
-      void main() {
-        gl_FragColor = vec4(0, 0, 1, 1.0);
-      }
-    </script>
-    <script type="text/javascript" src="Common/webgl-utils.js"></script>
-
-    <script type="text/javascript" src="Common/initShaders.js"></script>
-
-    <script type="text/javascript" src="Common/MV.js"></script>
-    <script type="text/javascript" src="game.js"></script>
-  </head>
-  <body onload="init()">
-    <canvas id="gl-canvas" width="512" height="512"></canvas>
-    <h1> Circles of Life</h1>
-  </body>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" >
+			<title>Matthew Strenk: Lab2</title>
+			
+			<script id="vertex-shader" type="x-shader/x-vertex">
+				attribute vec4 myPosition;
+				uniform float theta;
+				uniform vec2 mouseCoordinates;
+				
+				void main() {
+					gl_PointSize = 1.0;
+					gl_Position.x = myPosition.x * cos(theta) + myPosition.y * sin(theta) + mouseCoordinates.x;
+                    gl_Position.y =-myPosition.x * sin(theta) + myPosition.y * cos(theta) + mouseCoordinates.y;
+                    gl_Position.z = 0.0;    
+                    gl_Position.w = 1.0; 
+				}
+			</script>
+			
+			<script id="fragment-shader" type="x-shader/x-fragment">
+				void main(){
+					gl_FragColor = vec4(0, 0, 1, 1);
+				}
+			</script>
+			
+			<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+            <script type="text/javascript" src="../Common/initShaders.js"></script>
+            <script type="text/javascript" src="../Common/MV.js"></script>
+        
+			<script type="text/javascript" src="lab2.js"></script>
+	</head>
+	
+	<body onload="drawDecagon()" onkeydown="keyAction(event)">
+		<canvas id="gl-canvas" width="512" height="512" onclick="moveDecagon(event)"></canvas>
+    <br>
+		<button class="button1" type="button" onclick="startRot()">Start Rotation</button>
+		<button class="button2" type="button" onclick="stopRot()">Stop Rotation</button>
+		<button class="button3" type="button" onclick="increaseMove()">Increase</button>
+		<button class="button4" type="button" onclick="decreaseMove()">Decrease</button>
+		</br>
+	</body>
 </html>
+	
