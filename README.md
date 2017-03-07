@@ -1,2 +1,2 @@
-# Circles of Life
-Game where big circles eat small circles
+# Shape Pop
+Game where you shoot a cannon to pop shapes
