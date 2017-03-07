@@ -7,6 +7,7 @@ var theta, animation, mouseCoordLoc;
 var x, y;
 var moveX, moveY, moveValue;
 var stepX, stepY;
+var n = 300;
 
 function drawDecagon(){
 	theta = 0.0;
@@ -29,7 +30,6 @@ function drawDecagon(){
 	
 	var thetaStart = 0;
 	var thetaEnd = 2* Math.PI;
-	var n = 100;
 	var thetaStep = (thetaEnd - thetaStart)/n;
 	
 	var myPoint;
@@ -50,10 +50,7 @@ function drawDecagon(){
 	myShaderProgram = initShaders(gl, "vertex-shader", "fragment-shader");
 	gl.useProgram(myShaderProgram);
 	
-	mouseCoordLoc = gl.getUniformLocation(myShaderProgram, "mouseCoordinates");
-	gl.uniform2f(mouseCoordLoc, 0.0, 0.0);
 	
-		
     var myPosition = gl.getAttribLocation( myShaderProgram, "myPosition" );
     gl.vertexAttribPointer( myPosition, 2, gl.FLOAT, false, 0, 0 );
     gl.enableVertexAttribArray( myPosition );
@@ -62,22 +59,12 @@ function drawDecagon(){
 }
 function render() {
 	gl.clear(gl.COLOR_BUFFER_BIT);
-	gl.drawArrays(gl.TRIANGLE_FAN, 0, 10);
-		var thetaLoc = gl.getUniformLocation(myShaderProgram, "theta");
-	gl.uniform1f(thetaLoc, theta);
-	theta += .05 * animation;
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, n);
+	
 	stepX += moveX;
 	stepY += moveY;
-	gl.uniform2f(mouseCoordLoc, stepX, stepY);
+
 	requestAnimFrame(render);
-}
-function moveDecagon(event) {
-	var locX = event.clientX;
-	var locY = event.clientY;
-	
-	stepX = 2 * locX / 512 - 1;
-	stepY = -(2 * locY / 512 -1);
-	gl.uniform2f(mouseCoordLoc, stepX, stepY);
 }
 
 function keyAction(event){
@@ -111,4 +98,7 @@ function increaseMove(){
 		} else if (moveY > 0){
 			moveY = moveValue;
 		}
-	
+	}
+}
+
+

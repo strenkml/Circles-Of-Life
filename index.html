@@ -78,14 +78,8 @@ button:hover{
 			<script type="text/javascript" src="game.js"></script>
 	</head>
 	
-	<body onload="drawDecagon()" onkeydown="keyAction(event)">
-		<canvas id="gl-canvas" width="512" height="512" onclick="moveDecagon(event)"></canvas>
-    <br>
-		<button class="button1" type="button" onclick="startRot()">Start Rotation</button>
-		<button class="button2" type="button" onclick="stopRot()">Stop Rotation</button>
-		<button class="button3" type="button" onclick="increaseMove()">Increase</button>
-		<button class="button4" type="button" onclick="decreaseMove()">Decrease</button>
-		</br>
+	<body onload="drawDecagon()" onkeydown="keyAction(event);increaseMove()">
+		<canvas id="gl-canvas" width="512" height="512"></canvas>
 	</body>
 </html>
 	
