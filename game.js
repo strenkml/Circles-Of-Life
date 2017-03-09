@@ -1,7 +1,3 @@
-//Michael Farden
-//CS452
-//Lab 2
-
 var theta, canvas, gl;
 var myShaderProgram;
 
