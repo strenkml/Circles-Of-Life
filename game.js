@@ -1,5 +1,7 @@
 var theta, canvas, gl;
-var myShaderProgram;
+var myShaderProgramCircle, myShaderProgramFood;
+var n = 100;
+var score = 0;
 
 //Animation global variables
 var coordinatesUniform;
@@ -11,11 +13,15 @@ function init() {
 	canvas = document.getElementById("gl-canvas");
 	gl = WebGLUtils.setupWebGL(canvas);
 	if (!gl) { alert("WebGL is unavailable"); }
-	gl.viewport(0, 0, 512, 512);
+	gl.viewport(0, 0, 720, 720);
 	gl.clearColor(0, 0, 0, 1);
 
-	myShaderProgram = initShaders(gl,"vertex-shader", "fragment-shader-hexagon");
-	gl.useProgram(myShaderProgram);
+	myShaderProgramCircle = initShaders(gl,"vertex-shader", "fragment-shader-circle");
+	gl.useProgram(myShaderProgramCircle);
+	drawCircle();
+
+	//myShaderProgramFood = initShaders(gl,"vertex-shader", "fragment-shader-food");
+	//gl.useProgram(myShaderProgramFood);
 
 	theta = .0;
 	rotateFlag = 0;
@@ -23,42 +29,44 @@ function init() {
 	directionX = .0; directionY = .0;
 	stepScale = .01;
 
-	coordinatesUniform = gl.getUniformLocation(myShaderProgram, "mouseCoordinates");
+	coordinatesUniform = gl.getUniformLocation(myShaderProgramCircle, "mouseCoordinates");
 	gl.uniform2f(coordinatesUniform, .0, .0);
 
-	setupHexagon();
+	document.getElementById('score').innerHTML = score;
+
+
 	render();
 }
 
-function setupHexagon() {
-	var arrayOfPointsForHexagon = [];
+function drawCircle() {
+	var arrayOfPointsForCircle = [];
 
 	var x,y;
 
 	var thetaStart = 0;
 	var thetaEnd = 2 * Math.PI;
-	var thetaStep = (thetaEnd - thetaStart)/100;
+	var thetaStep = (thetaEnd - thetaStart)/n;
 
 	var myPoint;
 
-	for (var i = 0; i < 100; i++) {
+	for (var i = 0; i < n; i++) {
 		theta = thetaStart + i * thetaStep;
-		x = Math.cos(theta)/5;
-		y = Math.sin(theta)/5;
+		x = Math.cos(theta)/10;
+		y = Math.sin(theta)/10;
 		myPoint = vec2(x,y);
-		arrayOfPointsForHexagon.push(myPoint);
+		arrayOfPointsForCircle.push(myPoint);
 	}
 
 	var bufferId = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
-	gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForHexagon), gl.STATIC_DRAW);
+	gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForCircle), gl.STATIC_DRAW);
 
-	var myPosition = gl.getAttribLocation(myShaderProgram, "myPosition");
+	var myPosition = gl.getAttribLocation(myShaderProgramCircle, "myPosition");
 	gl.vertexAttribPointer(myPosition, 2, gl.FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(myPosition);
 }
 
-function moveHexagon(event) {
+function moveCircle(event) {
 	var canvasX = event.clientX;
 	var canvasY = event.clientY;
 
@@ -67,7 +75,7 @@ function moveHexagon(event) {
 	gl.uniform2f(coordinatesUniform, stepX, stepY);
 }
 
-function moveHexagonKeys(event) {
+function moveCircleKeys(event) {
 	var theKeyCode = event.keyCode;
 	if (theKeyCode == 65) { // 'a'
 		directionX = -stepScale;
@@ -88,13 +96,50 @@ function moveHexagonKeys(event) {
 }
 
 function render() {
-	var thetaUniform = gl.getUniformLocation(myShaderProgram, "theta");
+	var thetaUniform = gl.getUniformLocation(myShaderProgramCircle, "theta");
 
 	gl.uniform1f(thetaUniform, theta);
 	gl.clear(gl.COLOR_BUFFER_BIT);
-	gl.drawArrays(gl.TRIANGLE_FAN, 0, 100);
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, n);
 	gl.uniform2f(coordinatesUniform, stepX, stepY);
 	stepX += directionX;
 	stepY += directionY;
 	requestAnimFrame(render);
+}
+
+function updateScore() {
+	score += 10;
+	document.getElementById('score').innerHTML = score;
+}
+
+function drawFood(){
+	var arrayOfPointsForFood = [];
+
+	var x,y;
+
+	var thetaStart = 0;
+	var thetaEnd = 2 * Math.PI;
+	var thetaStep = (thetaEnd - thetaStart)/n;
+
+	var myPoint;
+
+	for (var i = 0; i < n; i++) {
+		theta = thetaStart + i * thetaStep;
+		x = Math.cos(theta)/10;
+		y = Math.sin(theta)/10;
+		myPoint = vec2(x,y);
+		arrayOfPointsForFood.push(myPoint);
+	}
+
+	var bufferId = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, bufferId);
+	gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForFood), gl.STATIC_DRAW);
+
+	var myPosition = gl.getAttribLocation(myShaderProgramFood, "myPosition");
+	gl.vertexAttribPointer(myPosition, 2, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(myPosition);
+}
+
+function drawEnemy(){
+
 }
