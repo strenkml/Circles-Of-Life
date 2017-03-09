@@ -1,0 +1,40 @@
+<!-- Michael Farden -->
+<!-- CS452 -->
+<!-- Lab 2 -->
+
+<!DOCTYPE html>
+<html>
+	<head>
+	<title>Strenk_Farden_Project 1</title>
+		<script id="vertex-shader" type="x-shader/x-vertex">
+		attribute vec4 myPosition;
+		uniform float theta;
+		uniform vec2 mouseCoordinates;
+
+			void main() {
+				gl_PointSize = 1.0;
+				gl_Position.x = myPosition.x * cos(theta) + myPosition.y * sin(theta)
+										+ mouseCoordinates.x;
+				gl_Position.y = -myPosition.x * sin(theta) + myPosition.y * cos(theta)
+										+ mouseCoordinates.y;
+				gl_Position.z = 0.0;
+				gl_Position.w = 1.0;
+			}
+		</script>
+
+		<script id="fragment-shader-hexagon" type="x-shader/x-fragment">
+			void main() {
+				gl_FragColor = vec4(1,1,1,1);
+			}
+		</script>
+
+		<script type="text/javascript" src="../Common/webgl-utils.js"></script>
+		<script type="text/javascript" src="../Common/initShaders.js"></script>
+		<script type="text/javascript" src="../Common/MV.js"></script>
+		<script type="text/javascript" src="project1.js"></script>
+	</head>
+
+	<body onload="init()" onkeydown="moveHexagonKeys(event)">
+		<canvas id="gl-canvas" width="512" height="512" ></canvas><br/>
+	</body>
+</html>
