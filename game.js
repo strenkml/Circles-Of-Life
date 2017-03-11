@@ -22,13 +22,21 @@ function init() {
 	drawCircle();
 
 	myShaderProgramFood = initShaders(gl,"vertex-shader2", "fragment-shader-food");
-	drawFood();
+	
+	var i;
+	for (i=0;i<5;i++){
+		var randX = (Math.random() * 1) - 1;
+		var randY = (Math.random() * 1) - 1;
+		
+		drawFood(randX, randY);
+	}
 
 	myShaderProgramEnemy = initShaders(gl,"vertex-shader3", "fragment-shader-enemy");
 	drawEnemy();
 
 	theta = .0;
-	stepX = .0; stepY = .0;
+	stepX = .0; 
+	stepY = .0;
 	directionX = .0; directionY = .0;
 	stepScale = .01;
 
@@ -104,7 +112,7 @@ function drawCircle() {
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForCircle), gl.STATIC_DRAW);
 }
 
-function drawFood() {
+function drawFood(xShift, yShift) {
 	arrayOfPointsForFood = [];
 	var thetaStart = 0;
 	var thetaEnd = 2 * Math.PI;
@@ -112,8 +120,8 @@ function drawFood() {
 
 	for (var i = 0; i < 100; i++) {
 		theta = thetaStart + i * thetaStep;
-		var x = .5 + Math.cos(theta)/30;
-		var y = .5 + Math.sin(theta)/30;
+		var x = xShift + Math.cos(theta)/30;
+		var y = yShift + Math.sin(theta)/30;
 		var myPoint = vec2(x,y);
 		arrayOfPointsForFood.push(myPoint);
 	}
@@ -174,4 +182,8 @@ function moveCircleKeys(event) {
 function updateScore() {
 	score += 10;
 	document.getElementById('score').innerHTML = score;
+}
+
+function foodCollision(){
+	
 }
