@@ -18,12 +18,12 @@ function init() {
 	gl.viewport(0, 0, 720, 720);
 	gl.clearColor(0, 0, 0, 1);
 
-	myShaderProgramCircle = initShaders(gl,"vertex-shader", "fragment-shader-circle");
-	drawCircle();
-
 	myShaderProgramFood = initShaders(gl,"vertex-shader2", "fragment-shader-food"); 
 	drawFood();
 	
+	myShaderProgramCircle = initShaders(gl,"vertex-shader", "fragment-shader-circle");
+	drawCircle();
+
 	theta = .0;
 	stepX = .0; stepY = .0;
 	directionX = .0; directionY = .0;
@@ -39,6 +39,17 @@ function init() {
 
 function render() {
 	gl.clear(gl.COLOR_BUFFER_BIT);
+	
+	// Food shader program
+	gl.useProgram(myShaderProgramFood);
+	
+	gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdFood);
+	
+	var myPositionFood = gl.getAttribLocation(myShaderProgramFood, "foodPosition");
+	gl.vertexAttribPointer(myPositionFood, 2, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(myPositionFood);
+	
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, 100);
 	
 	// Circle shader program
 	gl.useProgram(myShaderProgramCircle);
@@ -56,17 +67,6 @@ function render() {
 	gl.uniform2f(coordinatesUniform, stepX, stepY);
 	stepX += directionX;
 	stepY += directionY;
-	
-	// Food shader program
-	gl.useProgram(myShaderProgramFood);
-	
-	gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdFood);
-	
-	var myPositionFood = gl.getAttribLocation(myShaderProgramFood, "foodPosition");
-	gl.vertexAttribPointer(myPositionFood, 2, gl.FLOAT, false, 0, 0);
-	gl.enableVertexAttribArray(myPositionFood);
-	
-	gl.drawArrays(gl.TRIANGLE_FAN, 0, 100);
 	
 	requestAnimFrame(render);
 }

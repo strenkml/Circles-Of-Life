@@ -21,18 +21,10 @@
 				
 				<script id="vertex-shader2" type="x-shader/x-vertex">
 					attribute vec4 foodPosition;
-					mat4 M_ty;
-					uniform float transY;
-
-					void main()
-					{
-						M_ty = mat4
-						(1, 0, 0, 0,
-						0, 1, 0, 0,
-						0, 0, 1, 0,
-						0, transY, 0, 1);
+				
+					void main() {
 						gl_PointSize = 1.0;
-						gl_Position =  M_ty * foodPosition;
+						gl_Position = foodPosition;
 					}
 				</script>
 				
