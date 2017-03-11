@@ -1,7 +1,7 @@
 var theta, canvas, gl;
-var myShaderProgramCircle, myShaderProgramFood;
-var bufferIdCircle, bufferIdFood;
-var arrayOfPointsForCircle, arrayOfPointsForFood;
+var myShaderProgramCircle, myShaderProgramFood, myShaderProgramEnemy;
+var bufferIdCircle, bufferIdFood, bufferIdEnemy;
+var arrayOfPointsForCircle, arrayOfPointsForFood, arrayOfPointsForEnemy;
 var score = 0;
 
 //Animation global variables
@@ -18,12 +18,15 @@ function init() {
 	gl.viewport(0, 0, 720, 720);
 	gl.clearColor(0, 0, 0, 1);
 
+	myShaderProgramCircle = initShaders(gl,"vertex-shader", "fragment-shader-circle");
+	drawCircle();
+	
 	myShaderProgramFood = initShaders(gl,"vertex-shader2", "fragment-shader-food"); 
 	drawFood();
 	
-	myShaderProgramCircle = initShaders(gl,"vertex-shader", "fragment-shader-circle");
-	drawCircle();
-
+	myShaderProgramEnemy = initShaders(gl,"vertex-shader3", "fragment-shader-enemy");
+	drawEnemy();
+	
 	theta = .0;
 	stepX = .0; stepY = .0;
 	directionX = .0; directionY = .0;
@@ -39,6 +42,17 @@ function init() {
 
 function render() {
 	gl.clear(gl.COLOR_BUFFER_BIT);
+	
+	// Enemy shader program
+	gl.useProgram(myShaderProgramEnemy);
+	
+	gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdEnemy);
+	
+	var myPositionEnemy = gl.getAttribLocation(myShaderProgramEnemy, "enemyPosition");
+	gl.vertexAttribPointer(myPositionEnemy, 2, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(myPositionEnemy);
+	
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, 3);
 	
 	// Food shader program
 	gl.useProgram(myShaderProgramFood);
@@ -98,8 +112,8 @@ function drawFood() {
 
 	for (var i = 0; i < 100; i++) {
 		theta = thetaStart + i * thetaStep;
-		var x = Math.cos(theta)/30;
-		var y = Math.sin(theta)/30;
+		var x = .5 + Math.cos(theta)/30;
+		var y = .5 + Math.sin(theta)/30;
 		var myPoint = vec2(x,y);
 		arrayOfPointsForFood.push(myPoint);
 	}
@@ -107,6 +121,25 @@ function drawFood() {
 	bufferIdFood = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdFood);
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForFood), gl.STATIC_DRAW);
+}
+
+function drawEnemy() {
+	arrayOfPointsForEnemy = [];
+	var thetaStart = 0;
+	var thetaEnd = 2 * Math.PI;
+	var thetaStep = (thetaEnd - thetaStart)/3;
+
+	for (var i = 0; i < 3; i++) {
+		theta = thetaStart + i * thetaStep;
+		var x = -.5 + Math.cos(theta)/6;
+		var y = -.5 + Math.sin(theta)/6;
+		var myPoint = vec2(x,y);
+		arrayOfPointsForEnemy.push(myPoint);
+	}
+
+	bufferIdEnemy = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdEnemy);
+	gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForEnemy), gl.STATIC_DRAW);
 }
 
 function moveCircle(event) {
