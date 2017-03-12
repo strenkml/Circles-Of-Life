@@ -3,6 +3,8 @@ var myShaderProgramCircle, myShaderProgramFood, myShaderProgramEnemy;
 var bufferIdCircle, bufferIdFood, bufferIdEnemy;
 var arrayOfPointsForCircle, arrayOfPointsForFood, arrayOfPointsForEnemy;
 var score = 0;
+var foodLeft = 5;
+var randX,randY;
 
 //Animation global variables
 var coordinatesUniform;
@@ -72,6 +74,9 @@ function render() {
 	gl.uniform2f(coordinatesUniform, stepX, stepY);
 	stepX += directionX;
 	stepY += directionY;
+		
+	bounds();
+	foodCollision();
 
 	requestAnimFrame(render);
 }
@@ -101,8 +106,8 @@ function drawFood() {
 	var thetaEnd = 2 * Math.PI;
 	var thetaStep = (thetaEnd - thetaStart)/100;
 
-	var randX = Math.random() * 2 - 1;
-	var randY = Math.random() * 2 - 1;
+	randX = Math.random() * 2 - 1;
+	randY = Math.random() * 2 - 1;
 
 	for (var i = 0; i < 100; i++) {
 		theta = thetaStart + i * thetaStep;
@@ -136,15 +141,6 @@ function drawEnemy() {
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForEnemy), gl.STATIC_DRAW);
 }
 
-function moveCircle(event) {
-	var canvasX = event.clientX;
-	var canvasY = event.clientY;
-
-	stepX = 2 * canvasX / 512 - 1;
-	stepY = -(2 * canvasY / 512 - 1);
-	gl.uniform2f(coordinatesUniform, stepX, stepY);
-}
-
 function moveCircleKeys(event) {
 	var theKeyCode = event.keyCode;
 	if (theKeyCode == 65) { // 'a'
@@ -163,13 +159,51 @@ function moveCircleKeys(event) {
 		directionY = stepScale;
 		directionX = .0;
 	}
+	
+	
 }
 
 function updateScore() {
 	score += 10;
 	document.getElementById('score').innerHTML = score;
+	
+	if (score == 1000){
+		win();
+	}//end if
 }
 
 function foodCollision(){
+	var collide = false;
+	for (var x = randX - .2;x <= randX + .2; x += .02){
+		for (var y = randY -.2; y <= randY + .2; y += .02){
+			if(x == stepX && y == stepY){
+				collide = true;
+			}
+		}
+	}
+		
+	if (collide == true) {
+		//delete food circle
+		updateScore();
+	}
+}
 
+function enemyCollision(){
+	
+}
+
+function win(){
+	
+}
+
+function bounds(){
+	if (stepX >=1){
+		stepX = -1;
+	}else if (stepX <=-1){
+		stepX = 1;
+	} else if (stepY >= 1) {
+		stepY = -1;
+	} else if (stepY <= -1) {
+		stepY = 1;
+	}
 }
