@@ -22,20 +22,13 @@ function init() {
 	drawCircle();
 
 	myShaderProgramFood = initShaders(gl,"vertex-shader2", "fragment-shader-food");
-	
-	var i;
-	for (i=0;i<5;i++){
-		var randX = (Math.random() * 1) - 1;
-		var randY = (Math.random() * 1) - 1;
-		
-		drawFood(randX, randY);
-	}
+	drawFood();
 
 	myShaderProgramEnemy = initShaders(gl,"vertex-shader3", "fragment-shader-enemy");
 	drawEnemy();
 
 	theta = .0;
-	stepX = .0; 
+	stepX = .0;
 	stepY = .0;
 	directionX = .0; directionY = .0;
 	stepScale = .01;
@@ -53,39 +46,29 @@ function render() {
 
 	// Enemy shader program
 	gl.useProgram(myShaderProgramEnemy);
-
 	gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdEnemy);
-
 	var myPositionEnemy = gl.getAttribLocation(myShaderProgramEnemy, "enemyPosition");
 	gl.vertexAttribPointer(myPositionEnemy, 2, gl.FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(myPositionEnemy);
-
-	gl.drawArrays(gl.TRIANGLE_FAN, 0, 3);
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, 5);
 
 	// Food shader program
 	gl.useProgram(myShaderProgramFood);
-
 	gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdFood);
-
 	var myPositionFood = gl.getAttribLocation(myShaderProgramFood, "foodPosition");
 	gl.vertexAttribPointer(myPositionFood, 2, gl.FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(myPositionFood);
-
 	gl.drawArrays(gl.TRIANGLE_FAN, 0, 100);
 
 	// Circle shader program
 	gl.useProgram(myShaderProgramCircle);
-
 	thetaUniform = gl.getUniformLocation(myShaderProgramCircle, "theta");
 	gl.uniform1f(thetaUniform, theta);
-
 	gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdCircle);
-
 	var myPosition = gl.getAttribLocation(myShaderProgramCircle, "myPosition");
 	gl.vertexAttribPointer(myPosition, 2, gl.FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(myPosition);
 	gl.drawArrays(gl.TRIANGLE_FAN, 0, 100);
-
 	gl.uniform2f(coordinatesUniform, stepX, stepY);
 	stepX += directionX;
 	stepY += directionY;
@@ -112,16 +95,19 @@ function drawCircle() {
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForCircle), gl.STATIC_DRAW);
 }
 
-function drawFood(xShift, yShift) {
+function drawFood() {
 	arrayOfPointsForFood = [];
 	var thetaStart = 0;
 	var thetaEnd = 2 * Math.PI;
 	var thetaStep = (thetaEnd - thetaStart)/100;
 
+	var randX = Math.random() * 2 - 1;
+	var randY = Math.random() * 2 - 1;
+
 	for (var i = 0; i < 100; i++) {
 		theta = thetaStart + i * thetaStep;
-		var x = xShift + Math.cos(theta)/30;
-		var y = yShift + Math.sin(theta)/30;
+		var x = randX + Math.cos(theta)/30;
+		var y = randY + Math.sin(theta)/30;
 		var myPoint = vec2(x,y);
 		arrayOfPointsForFood.push(myPoint);
 	}
@@ -135,9 +121,9 @@ function drawEnemy() {
 	arrayOfPointsForEnemy = [];
 	var thetaStart = 0;
 	var thetaEnd = 2 * Math.PI;
-	var thetaStep = (thetaEnd - thetaStart)/3;
+	var thetaStep = (thetaEnd - thetaStart)/5;
 
-	for (var i = 0; i < 3; i++) {
+	for (var i = 0; i < 5; i++) {
 		theta = thetaStart + i * thetaStep;
 		var x = -.5 + Math.cos(theta)/6;
 		var y = -.5 + Math.sin(theta)/6;
@@ -185,5 +171,5 @@ function updateScore() {
 }
 
 function foodCollision(){
-	
+
 }
