@@ -6,6 +6,7 @@ var score = 0;
 var foodLeft = 5;
 var randX,randY;
 var foodRadius = 30;
+var circleRadius = 10;
 
 //Animation global variables
 var coordinatesUniform;
@@ -79,7 +80,7 @@ function render() {
 	bounds();
 	foodCollision();
 	enemyCollision();
-
+	
 	requestAnimFrame(render);
 }
 
@@ -91,8 +92,8 @@ function drawCircle() {
 
 	for (var i = 0; i < 100; i++) {
 		theta = thetaStart + i * thetaStep;
-		var x = Math.cos(theta)/10;
-		var y = Math.sin(theta)/10;
+		var x = Math.cos(theta)/circleRadius;
+		var y = Math.sin(theta)/circleRadius;
 		var myPoint = vec2(x,y);
 		arrayOfPointsForCircle.push(myPoint);
 	}
@@ -161,8 +162,6 @@ function moveCircleKeys(event) {
 		directionY = stepScale;
 		directionX = .0;
 	}
-	
-	
 }
 
 function updateScore() {
@@ -187,6 +186,7 @@ function foodCollision(){
 	if (collide == true) {
 		//delete food circle
 		foodRadius -= 2;
+		circleRadius--;
 		updateScore();
 	}
 }
