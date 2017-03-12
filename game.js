@@ -5,6 +5,7 @@ var arrayOfPointsForCircle, arrayOfPointsForFood, arrayOfPointsForEnemy;
 var score = 0;
 var foodLeft = 5;
 var randX,randY;
+var foodRadius = 30;
 
 //Animation global variables
 var coordinatesUniform;
@@ -74,9 +75,10 @@ function render() {
 	gl.uniform2f(coordinatesUniform, stepX, stepY);
 	stepX += directionX;
 	stepY += directionY;
-		
+	
 	bounds();
 	foodCollision();
+	enemyCollision();
 
 	requestAnimFrame(render);
 }
@@ -111,8 +113,8 @@ function drawFood() {
 
 	for (var i = 0; i < 100; i++) {
 		theta = thetaStart + i * thetaStep;
-		var x = randX + Math.cos(theta)/30;
-		var y = randY + Math.sin(theta)/30;
+		var x = randX + Math.cos(theta)/foodRadius;
+		var y = randY + Math.sin(theta)/foodRadius;
 		var myPoint = vec2(x,y);
 		arrayOfPointsForFood.push(myPoint);
 	}
@@ -184,12 +186,26 @@ function foodCollision(){
 		
 	if (collide == true) {
 		//delete food circle
+		foodRadius -= 2;
 		updateScore();
 	}
 }
 
 function enemyCollision(){
-	
+	var collide = false;
+	var x,y;
+	for (x = -.7;x <= -.3; x += .02){
+		for (y = -.7; y <= -.3; y += .02){
+			if(x == stepX && y == stepY){
+				collide = true;
+			}
+		}
+	}
+		
+	if (collide == true) {
+		//Lose game
+		console.logo("LOSER");
+	}
 }
 
 function win(){
