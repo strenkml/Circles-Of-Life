@@ -9,6 +9,8 @@ var randX,randY;
 var foodRadius = 30;
 var circleRadius = 10;
 
+var gameOver = false;
+
 //Animation global variables
 var coordinatesUniform;
 var stepX, stepY, stepScale;
@@ -23,16 +25,16 @@ function init() {
 	gl.clearColor(0, 0, 0, 1);
 
 	myShaderProgramCircle = initShaders(gl,"vertex-shader", "fragment-shader-circle");
-	drawCircle();
+	drawCircle(1);
 
 	myShaderProgramFood = initShaders(gl,"vertex-shader2", "fragment-shader-food");
-	drawFood();
+	drawFood(1);
 
 	myShaderProgramEnemy = initShaders(gl,"vertex-shader3", "fragment-shader-enemy");
-	drawEnemy();
+	drawEnemy(1);
 
 	myShaderProgramEnemy2 = initShaders(gl,"vertex-shader3", "fragment-shader-enemy2");
-	drawEnemy2();
+	drawEnemy2(1);
 
 	theta = .0;
 	stepX = .0; stepY = .0; stepScale = .01;
@@ -93,10 +95,10 @@ function render() {
 	requestAnimFrame(render);
 }
 
-function drawCircle() {
+function drawCircle(visible) {
 	arrayOfPointsForCircle = [];
 	var thetaStart = 0;
-	var thetaEnd = 2 * Math.PI;
+	var thetaEnd = 2 * Math.PI * visible;
 	var thetaStep = (thetaEnd - thetaStart)/100;
 
 	for (var i = 0; i < 100; i++) {
@@ -112,10 +114,10 @@ function drawCircle() {
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForCircle), gl.STATIC_DRAW);
 }
 
-function drawFood() {
+function drawFood(visible) {
 	arrayOfPointsForFood = [];
 	var thetaStart = 0;
-	var thetaEnd = 2 * Math.PI;
+	var thetaEnd = 2 * Math.PI * visible;
 	var thetaStep = (thetaEnd - thetaStart)/100;
 
 	randX = Math.random() * 2 - 1;
@@ -134,10 +136,10 @@ function drawFood() {
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForFood), gl.STATIC_DRAW);
 }
 
-function drawEnemy() {
+function drawEnemy(visible) {
 	arrayOfPointsForEnemy = [];
 	var thetaStart = 0;
-	var thetaEnd = 2 * Math.PI;
+	var thetaEnd = 2 * Math.PI * visible;
 	var thetaStep = (thetaEnd - thetaStart)/nEnemy;
 
 	for (var i = 0; i < nEnemy; i++) {
@@ -153,10 +155,10 @@ function drawEnemy() {
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForEnemy), gl.STATIC_DRAW);
 }
 
-function drawEnemy2() {
+function drawEnemy2(visible) {
 	arrayOfPointsForEnemy2 = [];
 	var thetaStart = 0;
-	var thetaEnd = 2 * Math.PI;
+	var thetaEnd = 2 * Math.PI * visible;
 	var thetaStep = (thetaEnd - thetaStart)/nEnemy2;
 
 	for (var i = 0; i < nEnemy2; i++) {
@@ -174,53 +176,64 @@ function drawEnemy2() {
 
 function moveCircleKeys(event) {
 	var theKeyCode = event.keyCode;
-	if (theKeyCode == 65) { // 'a'
+	if (theKeyCode == 65 && !gameOver) { // 'a'
 		directionX = -stepScale;
 		directionY = .0;
 	}
-	else if (theKeyCode == 68) { // 'd'
+	else if (theKeyCode == 68 && !gameOver) { // 'd'
 		directionX = stepScale;
 		directionY = .0;
 	}
-	else if (theKeyCode == 83) { // 's'
+	else if (theKeyCode == 83 && !gameOver) { // 's'
 		directionY = -stepScale;
 		directionX = .0;
 	}
-	else if (theKeyCode == 87) { // 'w'
+	else if (theKeyCode == 87 && !gameOver) { // 'w'
 		directionY = stepScale;
 		directionX = .0;
 	}
 }
 
 function updateScore() {
-	score += 10;
-	document.getElementById('score').innerHTML = score;
-
-	if (score === 100){
+	if (score != 10){
+		score += 10;
+		document.getElementById('score').innerHTML = score;	
+	} else{
 		win();
-	}//end if
+	}
 }
 
 function foodCollision(){
-	if (stepX >= randX - .1 && stepX <= randX + .1 && stepY >= randY - .1 && stepY <= randY + .1){
-		drawFood();
-		drawCircle();
+	if (stepX >= randX - .1 && stepX <= randX + .1 && stepY >= randY - .1 && stepY <= randY + .1 && !gameOver){
+		drawFood(1);
+		drawCircle(1);
 		updateScore();
 	}
 }
 
 function enemyCollision(){
-	if (stepX >= -.6 && stepX <= -.05 && stepY >= -.65 && stepY <= -.15){
-		console.log("Loss1");
+	if (stepX >= -.6 && stepX <= -.05 && stepY >= -.65 && stepY <= -.15 && !gameOver){
+		drawCircle(0);
+		score = "You Lose!";
+		document.getElementById('score').innerHTML = score;
+		gameOver = true;
 	}
 	
 	if (stepX >= 0 && stepX <= .55 && stepY >= .15 && stepY <= .65){
-		console.log("Loss2");
+		score = "You Lose!";
+		document.getElementById('score').innerHTML = score;
+		gameOver = true;
 	}
 }
 
 function win() {
-	
+	gameOver = true;
+	drawFood(0);
+	drawCircle(0);
+	drawEnemy(0);
+	drawEnemy2(0);
+	score = "You Win!";
+	document.getElementById('score').innerHTML = score;
 }
 
 function bounds() {
