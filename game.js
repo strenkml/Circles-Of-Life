@@ -202,17 +202,8 @@ function updateScore() {
 }
 
 function foodCollision(){
-	var collide = false;
-	for (var x = randX - .2; x <= randX + .2; x += .02){
-		for (var y = randY -.2; y <= randY + .2; y += .02){
-			if (x == stepX && y == stepY){
-					collide = true;
-			}
-		}
-	}
-
-	if (collide == true) {
-		//delete food circle
+	if (stepX >= randX - .1 && stepX <= randX + .1 && stepY >= randY -.1 && stepY <= randY + .1){
+		
 		foodRadius -= 2;
 		circleRadius--;
 		updateScore();
