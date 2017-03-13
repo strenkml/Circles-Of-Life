@@ -18,40 +18,46 @@
 						gl_Position.w = 1.0;
 					}
 				</script>
-				
+
 				<script id="vertex-shader2" type="x-shader/x-vertex">
 					attribute vec4 foodPosition;
-				
+
 					void main() {
 						gl_PointSize = 1.0;
 						gl_Position = foodPosition;
 					}
 				</script>
-				
+
 				<script id="vertex-shader3" type="x-shader/x-vertex">
 					attribute vec4 enemyPosition;
-				
+
 					void main() {
 						gl_PointSize = 1.0;
 						gl_Position = enemyPosition;
 					}
 				</script>
-				
+
 				<script id="fragment-shader-circle" type="x-shader/x-fragment">
 					void main() {
 						gl_FragColor = vec4(1,1,1,1);
 					}
 				</script>
-				
+
 				<script id="fragment-shader-food" type="x-shader/x-fragment">
 					void main() {
 						gl_FragColor = vec4(1,0,0,1);
 					}
 				</script>
-				
+
 				<script id="fragment-shader-enemy" type="x-shader/x-fragment">
 					void main() {
 						gl_FragColor = vec4(0,0,1,1);
+					}
+				</script>
+
+				<script id="fragment-shader-enemy2" type="x-shader/x-fragment">
+					void main() {
+						gl_FragColor = vec4(1,1,0,1);
 					}
 				</script>
 
