@@ -2,6 +2,7 @@ var theta, canvas, gl;
 var myShaderProgramCircle, myShaderProgramFood, myShaderProgramEnemy, myShaderProgramEnemy2;
 var bufferIdCircle, bufferIdFood, bufferIdEnemy, bufferIdEnemy2;
 var arrayOfPointsForCircle, arrayOfPointsForFood, arrayOfPointsForEnemy, arrayOfPointsForEnemy2;
+var nEnemy = 6; var nEnemy2 = 3;
 var score = 0;
 var foodLeft = 5;
 var randX,randY;
@@ -10,9 +11,8 @@ var circleRadius = 10;
 
 //Animation global variables
 var coordinatesUniform;
-var stepX, stepY;
+var stepX, stepY, stepScale;
 var directionX, directionY;
-var stepScale;
 var thetaUniform;
 
 function init() {
@@ -35,10 +35,8 @@ function init() {
 	drawEnemy2();
 
 	theta = .0;
-	stepX = .0;
-	stepY = .0;
+	stepX = .0; stepY = .0; stepScale = .01;
 	directionX = .0; directionY = .0;
-	stepScale = .01;
 
 	coordinatesUniform = gl.getUniformLocation(myShaderProgramCircle, "mouseCoordinates");
 	gl.uniform2f(coordinatesUniform, .0, .0);
@@ -57,7 +55,7 @@ function render() {
 	var myPositionEnemy = gl.getAttribLocation(myShaderProgramEnemy, "enemyPosition");
 	gl.vertexAttribPointer(myPositionEnemy, 2, gl.FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(myPositionEnemy);
-	gl.drawArrays(gl.TRIANGLE_FAN, 0, 5);
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, nEnemy);
 
 	// Enemy2 shader program
 	gl.useProgram(myShaderProgramEnemy2);
@@ -65,7 +63,7 @@ function render() {
 	var myPositionEnemy2 = gl.getAttribLocation(myShaderProgramEnemy2, "enemyPosition");
 	gl.vertexAttribPointer(myPositionEnemy2, 2, gl.FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(myPositionEnemy2);
-	gl.drawArrays(gl.TRIANGLE_FAN, 0, 3);
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, nEnemy2);
 
 	// Food shader program
 	gl.useProgram(myShaderProgramFood);
@@ -140,12 +138,12 @@ function drawEnemy() {
 	arrayOfPointsForEnemy = [];
 	var thetaStart = 0;
 	var thetaEnd = 2 * Math.PI;
-	var thetaStep = (thetaEnd - thetaStart)/5;
+	var thetaStep = (thetaEnd - thetaStart)/nEnemy;
 
-	for (var i = 0; i < 5; i++) {
+	for (var i = 0; i < nEnemy; i++) {
 		theta = thetaStart + i * thetaStep;
-		var x = -.5 + Math.cos(theta)/6;
-		var y = -.5 + Math.sin(theta)/6;
+		var x = -.3 + Math.cos(theta)/6;
+		var y = -.4 + Math.sin(theta)/6;
 		var myPoint = vec2(x,y);
 		arrayOfPointsForEnemy.push(myPoint);
 	}
@@ -159,12 +157,12 @@ function drawEnemy2() {
 	arrayOfPointsForEnemy2 = [];
 	var thetaStart = 0;
 	var thetaEnd = 2 * Math.PI;
-	var thetaStep = (thetaEnd - thetaStart)/3;
+	var thetaStep = (thetaEnd - thetaStart)/nEnemy2;
 
-	for (var i = 0; i < 3; i++) {
+	for (var i = 0; i < nEnemy2; i++) {
 		theta = thetaStart + i * thetaStep;
-		var x = .5 + Math.cos(theta)/6;
-		var y = .5 + Math.sin(theta)/6;
+		var x = .3 + Math.cos(theta)/6;
+		var y = .4 + Math.sin(theta)/6;
 		var myPoint = vec2(x,y);
 		arrayOfPointsForEnemy2.push(myPoint);
 	}
