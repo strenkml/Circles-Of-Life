@@ -196,39 +196,31 @@ function updateScore() {
 	score += 10;
 	document.getElementById('score').innerHTML = score;
 
-	if (score == 1000){
+	if (score === 100){
 		win();
 	}//end if
 }
 
 function foodCollision(){
-	if (stepX >= randX - .1 && stepX <= randX + .1 && stepY >= randY -.1 && stepY <= randY + .1){
-		
-		foodRadius -= 2;
-		circleRadius--;
+	if (stepX >= randX - .1 && stepX <= randX + .1 && stepY >= randY - .1 && stepY <= randY + .1){
+		drawFood();
+		drawCircle();
 		updateScore();
 	}
 }
 
 function enemyCollision(){
-	var collide = false;
-	var x,y;
-	for (x = -.7; x <= -.3; x += .02) {
-		for (y = -.7; y <= -.3; y += .02) {
-			if (x == stepX && y == stepY) {
-					collide = true;
-			}
-		}
+	if (stepX >= -.6 && stepX <= -.05 && stepY >= -.65 && stepY <= -.15){
+		console.log("Loss1");
 	}
-
-	if (collide == true) {
-		//Lose game
-		console.logo("LOSER");
+	
+	if (stepX >= 0 && stepX <= .55 && stepY >= .15 && stepY <= .65){
+		console.log("Loss2");
 	}
 }
 
 function win() {
-
+	
 }
 
 function bounds() {
