@@ -44,7 +44,8 @@ function init() {
 	gl.uniform2f(coordinatesUniform, .0, .0);
 
 	document.getElementById('score').innerHTML = score;
-
+	document.getElementById( "music" ).play();
+	
 	render();
 }
 
@@ -197,7 +198,7 @@ function moveCircleKeys(event) {
 function updateScore() {
 	if (score != 10){
 		score += 10;
-		document.getElementById('score').innerHTML = score;	
+		document.getElementById('score').innerHTML = score;
 	} else{
 		win();
 	}
@@ -218,7 +219,7 @@ function enemyCollision(){
 		document.getElementById('score').innerHTML = score;
 		gameOver = true;
 	}
-	
+
 	if (stepX >= 0 && stepX <= .55 && stepY >= .15 && stepY <= .65){
 		score = "You Lose!";
 		document.getElementById('score').innerHTML = score;
