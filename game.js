@@ -1,8 +1,8 @@
 var theta, canvas, gl;
-var myShaderProgramCircle, myShaderProgramFood, myShaderProgramEnemy, myShaderProgramEnemy2;
-var bufferIdCircle, bufferIdFood, bufferIdEnemy, bufferIdEnemy2;
+var myShaderProgramCircle, myShaderProgramFood, myShaderProgramEnemy, myShaderProgramEnemy2, myShaderProgramEnemy3, myShaderProgramEnemy4;
+var bufferIdCircle, bufferIdFood, bufferIdEnemy, bufferIdEnemy2, bufferIdEnemy3, bufferIdEnemy4;
 var arrayOfPointsForCircle, arrayOfPointsForFood, arrayOfPointsForEnemy, arrayOfPointsForEnemy2;
-var nEnemy = 6; var nEnemy2 = 3;
+var nEnemy = 4; var nEnemy2 = 4; var nEnemy3 = 4; var nEnemy4 = 4;
 var score = 0;
 var foodLeft = 5;
 var randX,randY;
@@ -31,10 +31,16 @@ function init() {
 	drawFood(1);
 
 	myShaderProgramEnemy = initShaders(gl,"vertex-shader3", "fragment-shader-enemy");
-	drawEnemy(1);
+	drawEnemy();
 
 	myShaderProgramEnemy2 = initShaders(gl,"vertex-shader3", "fragment-shader-enemy2");
-	drawEnemy2(1);
+	drawEnemy2();
+
+	myShaderProgramEnemy3 = initShaders(gl,"vertex-shader3", "fragment-shader-enemy3");
+	drawEnemy3();
+
+	myShaderProgramEnemy4 = initShaders(gl,"vertex-shader3", "fragment-shader-enemy4");
+	drawEnemy4();
 
 	theta = .0;
 	stepX = .0; stepY = .0; stepScale = .01;
@@ -45,7 +51,7 @@ function init() {
 
 	document.getElementById('score').innerHTML = score;
 	document.getElementById( "music" ).play();
-	
+
 	render();
 }
 
@@ -67,6 +73,22 @@ function render() {
 	gl.vertexAttribPointer(myPositionEnemy2, 2, gl.FLOAT, false, 0, 0);
 	gl.enableVertexAttribArray(myPositionEnemy2);
 	gl.drawArrays(gl.TRIANGLE_FAN, 0, nEnemy2);
+
+	// Enemy3 shader program
+	gl.useProgram(myShaderProgramEnemy3);
+	gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdEnemy3);
+	var myPositionEnemy3 = gl.getAttribLocation(myShaderProgramEnemy3, "enemyPosition");
+	gl.vertexAttribPointer(myPositionEnemy3, 2, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(myPositionEnemy3);
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, nEnemy3);
+
+	// Enemy4 shader program
+	gl.useProgram(myShaderProgramEnemy4);
+	gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdEnemy4);
+	var myPositionEnemy4 = gl.getAttribLocation(myShaderProgramEnemy4, "enemyPosition");
+	gl.vertexAttribPointer(myPositionEnemy4, 2, gl.FLOAT, false, 0, 0);
+	gl.enableVertexAttribArray(myPositionEnemy4);
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, nEnemy4);
 
 	// Food shader program
 	gl.useProgram(myShaderProgramFood);
@@ -124,6 +146,27 @@ function drawFood(visible) {
 	randX = Math.random() * 2 - 1;
 	randY = Math.random() * 2 - 1;
 
+	//blue
+	while(randX > .40 && randX < .80 && randY > .40 && randY < .80 ){
+		randX = Math.random() * 2 - 1;
+		randY = Math.random() * 2 - 1;
+	}
+	//aqua
+	while(randX > .40 && randX < .80 && randY < -.40 && randY > -.80 ){
+		randX = Math.random() * 2 - 1;
+		randY = Math.random() * 2 - 1;
+	}
+	//green
+	while(randX < -.40 && randX < -.80 && randY > .40 && randY < .80 ){
+		randX = Math.random() * 2 - 1;
+		randY = Math.random() * 2 - 1;
+	}
+	//pink
+	while(randX < -.40 && randX > -.80 && randY < -.40 && randY > -.80 ){
+		randX = Math.random() * 2 - 1;
+		randY = Math.random() * 2 - 1;
+	}
+
 	for (var i = 0; i < 100; i++) {
 		theta = thetaStart + i * thetaStep;
 		var x = randX + Math.cos(theta)/foodRadius;
@@ -137,42 +180,41 @@ function drawFood(visible) {
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForFood), gl.STATIC_DRAW);
 }
 
-function drawEnemy(visible) {
-	arrayOfPointsForEnemy = [];
-	var thetaStart = 0;
-	var thetaEnd = 2 * Math.PI * visible;
-	var thetaStep = (thetaEnd - thetaStart)/nEnemy;
-
-	for (var i = 0; i < nEnemy; i++) {
-		theta = thetaStart + i * thetaStep;
-		var x = -.3 + Math.cos(theta)/6;
-		var y = -.4 + Math.sin(theta)/6;
-		var myPoint = vec2(x,y);
-		arrayOfPointsForEnemy.push(myPoint);
-	}
+function drawEnemy() {
+	arrayOfPointsForEnemy = [vec2(.5,.5),vec2(.5,.3),vec2(.7,.3),vec2(.7,.5)];
 
 	bufferIdEnemy = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdEnemy);
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForEnemy), gl.STATIC_DRAW);
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, arrayOfPointsForEnemy.length);
+
 }
 
-function drawEnemy2(visible) {
-	arrayOfPointsForEnemy2 = [];
-	var thetaStart = 0;
-	var thetaEnd = 2 * Math.PI * visible;
-	var thetaStep = (thetaEnd - thetaStart)/nEnemy2;
-
-	for (var i = 0; i < nEnemy2; i++) {
-		theta = thetaStart + i * thetaStep;
-		var x = .3 + Math.cos(theta)/6;
-		var y = .4 + Math.sin(theta)/6;
-		var myPoint = vec2(x,y);
-		arrayOfPointsForEnemy2.push(myPoint);
-	}
+function drawEnemy2() {
+	arrayOfPointsForEnemy2 = [vec2(-.5,-.5),vec2(-.5,-.3),vec2(-.7,-.3),vec2(-.7,-.5)];
 
 	bufferIdEnemy2 = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdEnemy2);
 	gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForEnemy2), gl.STATIC_DRAW);
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, arrayOfPointsForEnemy2.length);
+}
+
+function drawEnemy3() {
+	arrayOfPointsForEnemy3 = [vec2(.5,-.5),vec2(.5,-.3),vec2(.7,-.3),vec2(.7,-.5)];
+
+	bufferIdEnemy3 = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdEnemy3);
+	gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForEnemy3), gl.STATIC_DRAW);
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, arrayOfPointsForEnemy3.length);
+}
+
+function drawEnemy4() {
+	arrayOfPointsForEnemy4 = [vec2(-.5,.5),vec2(-.5,.3),vec2(-.7,.3),vec2(-.7,.5)];
+
+	bufferIdEnemy4 = gl.createBuffer();
+	gl.bindBuffer(gl.ARRAY_BUFFER, bufferIdEnemy4);
+	gl.bufferData(gl.ARRAY_BUFFER, flatten(arrayOfPointsForEnemy4), gl.STATIC_DRAW);
+	gl.drawArrays(gl.TRIANGLE_FAN, 0, arrayOfPointsForEnemy4.length);
 }
 
 function moveCircleKeys(event) {
@@ -196,7 +238,7 @@ function moveCircleKeys(event) {
 }
 
 function updateScore() {
-	if (score != 10){
+	if (score + 10 != 100){
 		score += 10;
 		document.getElementById('score').innerHTML = score;
 	} else{
@@ -205,7 +247,8 @@ function updateScore() {
 }
 
 function foodCollision(){
-	if (stepX >= randX - .1 && stepX <= randX + .1 && stepY >= randY - .1 && stepY <= randY + .1 && !gameOver){
+	var r = .05;
+	if (stepX >= randX - r && stepX <= randX + r && stepY >= randY - r && stepY <= randY + r && !gameOver){
 		drawFood(1);
 		drawCircle(1);
 		updateScore();
@@ -213,14 +256,30 @@ function foodCollision(){
 }
 
 function enemyCollision(){
-	if (stepX >= -.6 && stepX <= -.05 && stepY >= -.65 && stepY <= -.15 && !gameOver){
+	//aqua
+	if (stepX >= .4 && stepX <= .8 && stepY >= -.6 && stepY <= -.2 && !gameOver){
 		drawCircle(0);
 		score = "You Lose!";
 		document.getElementById('score').innerHTML = score;
 		gameOver = true;
 	}
-
-	if (stepX >= 0 && stepX <= .55 && stepY >= .15 && stepY <= .65){
+	//green
+	if (stepX >= -.8 && stepX <= -.4 && stepY >= -.6 && stepY <= -.2 && !gameOver){
+		drawCircle(0);
+		score = "You Lose!";
+		document.getElementById('score').innerHTML = score;
+		gameOver = true;
+	}
+	//blue
+	if (stepX >= .4 && stepX <= .8 && stepY >= .2 && stepY <= .6 && !gameOver){
+		drawCircle(0);
+		score = "You Lose!";
+		document.getElementById('score').innerHTML = score;
+		gameOver = true;
+	}
+	//pink
+	if (stepX >= -.8 && stepX <= -.4 && stepY >= .2 && stepY <= .6 && !gameOver){
+		drawCircle(0);
 		score = "You Lose!";
 		document.getElementById('score').innerHTML = score;
 		gameOver = true;
@@ -230,7 +289,6 @@ function enemyCollision(){
 function win() {
 	gameOver = true;
 	drawFood(0);
-	drawCircle(0);
 	drawEnemy(0);
 	drawEnemy2(0);
 	score = "You Win!";
